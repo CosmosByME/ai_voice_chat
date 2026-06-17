@@ -22,7 +22,7 @@ class TtsService {
 
     // Load Kokoro ONNX model
     _session = await ort.createSessionFromAsset(
-      'assets/models/model_quantized.onnx',
+      'assets/models/kokoro.onnx',
     );
 
     // Load voice style binary
