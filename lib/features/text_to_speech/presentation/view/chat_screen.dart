@@ -82,9 +82,19 @@ class _ChatScreenViewState extends State<ChatScreenView> {
     });
     _controller.clear();
     _scrollToBottom();
+    setState(() {
+      _messages.add(
+        ChatMessage(
+          text: 'Thinking...',
+          isUser: false,
+          timestamp: DateTime.now(),
+        ),
+      );
+    });
     final response = await sl<AIService>().sendMessage(text);
     if (response.isNotEmpty) {
       setState(() {
+        _messages.removeLast();
         _messages.add(
           ChatMessage(text: response, isUser: false, timestamp: DateTime.now()),
         );

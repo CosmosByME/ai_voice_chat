@@ -16,26 +16,28 @@ class AIService {
       maxOutputTokens: 300,
     ),
     safetySettings: [
-      SafetySetting(
-        HarmCategory.harassment,
-        HarmBlockThreshold.none, null
-      ),
-      SafetySetting(
-        HarmCategory.hateSpeech,
-        HarmBlockThreshold.none, null
-      ),
+      SafetySetting(HarmCategory.harassment, HarmBlockThreshold.none, null),
+      SafetySetting(HarmCategory.hateSpeech, HarmBlockThreshold.none, null),
       SafetySetting(
         HarmCategory.dangerousContent,
-        HarmBlockThreshold.none, null 
+        HarmBlockThreshold.none,
+        null,
       ),
     ],
   );
 
   Future<String> sendMessage(String message) async {
     try {
-      final content = Content.text(message);
-      final response = await model.generateContent([content]);
-      return response.text ?? '';
+      final chat = model.startChat(
+        history: [
+          Content.text("Hello, my name is Muhammad"),
+          Content.model([const TextPart("Nice to meet you Muhammad")]),
+        ],
+      );
+
+      final response = await chat.sendMessage(Content.text(message));
+
+      return response.text ?? "";
     } catch (e) {
       return 'Error: $e';
     }
