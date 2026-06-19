@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "226250293712",
+    "project_id": "aichatvoiceapp",
+    "storage_bucket": "aichatvoiceapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:226250293712:android:6f5da6c23ac3039feab9d5",
+        "android_client_info": {
+          "package_name": "com.example.ai_voice_chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzYpkJ7EYVMcwYVq9Wnqci88cjKb-yFW8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

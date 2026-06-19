@@ -1,5 +1,7 @@
 import 'package:ai_voice_chat/core/services/service_locator.dart';
-import 'package:ai_voice_chat/core/services/stt_service.dart';
+import 'package:ai_voice_chat/core/services/stt/stt_service.dart';
+import 'package:ai_voice_chat/core/services/tts/audio_sevice.dart';
+import 'package:ai_voice_chat/core/services/tts/tts_service_2.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -19,9 +21,19 @@ class SpeachBloc extends Bloc<SpeachEvent, SpeachState> {
 
     on<StartListening>((event, emit) async {
       emit(SpeachListening(text: ''));
-      await sl<STTService>().listen((p0) {
-        add(SpeechResultUpdated(text: p0));
-      });
+      try {
+        await sl<AudioService>().stop();
+        await sl<TTSService2>().stop();
+      } catch (_) {}
+      
+      final isAvailable = await sl<STTService>().initialize();
+      if (isAvailable) {
+        await sl<STTService>().listen((p0) {
+          add(SpeechResultUpdated(text: p0));
+        });
+      } else {
+        add(SpeechErrorOccurred(error: 'Speech recognition is not available or permission denied'));
+      }
     });
 
     on<SpeechResultUpdated>((event, emit) {

@@ -1,4 +1,4 @@
-import 'package:ai_voice_chat/core/services/local_storage.dart';
+import 'package:ai_voice_chat/core/services/system/local_storage.dart';
 
 abstract class VoiceLocalDataSource {
   Future<void> casheVoiceKokoro(String text);

@@ -1,3 +1,4 @@
+import 'package:ai_voice_chat/core/services/ai_service/ai_service.dart';
 import 'package:ai_voice_chat/core/services/service_locator.dart';
 import 'package:ai_voice_chat/features/text_to_speech/presentation/bloc/tts_model/tts_model_bloc.dart';
 import 'package:ai_voice_chat/features/text_to_speech/presentation/bloc/voice/voice_bloc.dart';
@@ -16,7 +17,7 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<VoiceBloc>()..add(GetVoiceKokoroEvent()),
+      create: (_) => sl<VoiceBloc>()..add(GetVoiceGoogleEvent()),
       child: BlocProvider(
         create: (_) => sl<TtsModelBloc>()..add(TtsModelInitialize()),
         child: const ChatScreenView(),
@@ -41,12 +42,14 @@ class _ChatScreenViewState extends State<ChatScreenView> {
   @override
   void initState() {
     super.initState();
-    _messages.add(ChatMessage(
-      text:
-          'Hello! I am your AI Voice Assistant. Type any text below and I will speak it back to you. Select a voice model at the top left to customize my voice.',
-      isUser: false,
-      timestamp: DateTime.now(),
-    ));
+    _messages.add(
+      ChatMessage(
+        text:
+            'Hello! I am your AI Voice Assistant. Type any text below and I will speak it back to you. Select a voice model at the top left to customize my voice.',
+        isUser: false,
+        timestamp: DateTime.now(),
+      ),
+    );
   }
 
   @override
@@ -69,19 +72,30 @@ class _ChatScreenViewState extends State<ChatScreenView> {
     });
   }
 
-  void _sendMessage() {
+  void _sendMessage() async {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
     setState(() {
-      _messages.add(ChatMessage(text: text, isUser: true, timestamp: DateTime.now()));
+      _messages.add(
+        ChatMessage(text: text, isUser: true, timestamp: DateTime.now()),
+      );
     });
     _controller.clear();
     _scrollToBottom();
-    context.read<TtsModelBloc>().add(TtsModelSay(text: text, isFast: _isFastMode));
-    setState(() {
-      _messages.add(ChatMessage(text: text, isUser: false, timestamp: DateTime.now()));
-    });
-    _scrollToBottom();
+    final response = await sl<AIService>().sendMessage(text);
+    if (response.isNotEmpty) {
+      setState(() {
+        _messages.add(
+          ChatMessage(text: response, isUser: false, timestamp: DateTime.now()),
+        );
+      });
+      if (mounted) {
+        context.read<TtsModelBloc>().add(
+          TtsModelSay(text: response, isFast: _isFastMode),
+        );
+      }
+      _scrollToBottom();
+    }
   }
 
   @override
@@ -90,7 +104,14 @@ class _ChatScreenViewState extends State<ChatScreenView> {
       backgroundColor: const Color(0xFF0D0A1C),
       appBar: ChatAppBar(
         isFastMode: _isFastMode,
-        onModeChanged: (val) => setState(() => _isFastMode = val),
+        onModeChanged: (val) {
+          setState(() => _isFastMode = val);
+          if (val) {
+            context.read<VoiceBloc>().add(GetVoiceGoogleEvent());
+          } else {
+            context.read<VoiceBloc>().add(GetVoiceKokoroEvent());
+          }
+        },
       ),
       body: Column(
         children: [

@@ -37,11 +37,19 @@ class _VoiceSelector extends StatelessWidget {
 
   String _kokoroLabel(String code) {
     switch (code) {
-      case 'af_heart':   return 'Heart 🌟';
-      case 'af_nicole':  return 'Nicole ⚡';
-      case 'am_eric':    return 'Eric 🎙️';
-      case 'am_michael': return 'Michael 💼';
-      default:           return 'Heart 🌟';
+      case 'af_heart':   return 'Heart';
+      case 'af_nicole':  return 'Nicole';
+      case 'am_eric':    return 'Eric';
+      case 'am_michael': return 'Michael';
+      default:           return 'Heart';
+    }
+  }
+
+  String _googleLabel(String code) {
+    switch (code) {
+      case 'en-us-x-tpc-local': return 'Female';
+      case 'en-us-x-tpd-local': return 'Male';
+      default:                  return 'Female';
     }
   }
 
@@ -69,7 +77,7 @@ class _VoiceSelector extends StatelessWidget {
                 Icon(isFastMode ? Icons.language : Icons.auto_awesome,
                     color: const Color(0xFF00E5FF), size: 16),
                 const SizedBox(width: 8),
-                Text(isFastMode ? 'Google Voice' : _kokoroLabel(selectedVoice),
+                Text(isFastMode ? _googleLabel(selectedVoice) : _kokoroLabel(selectedVoice),
                     style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 4),
                 const Icon(Icons.keyboard_arrow_down, color: Colors.white54, size: 16),

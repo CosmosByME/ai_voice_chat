@@ -1,7 +1,7 @@
-import 'package:ai_voice_chat/core/services/audio_sevice.dart';
+import 'package:ai_voice_chat/core/services/tts/audio_sevice.dart';
 import 'package:ai_voice_chat/core/services/service_locator.dart';
-import 'package:ai_voice_chat/core/services/tts_service1.dart';
-import 'package:ai_voice_chat/core/services/tts_service_2.dart';
+import 'package:ai_voice_chat/core/services/tts/tts_service1.dart';
+import 'package:ai_voice_chat/core/services/tts/tts_service_2.dart';
 import 'package:ai_voice_chat/features/text_to_speech/domain/voice_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -31,8 +31,8 @@ class TtsModelBloc extends Bloc<TtsModelEvent, TtsModelState> {
     try {
       final voiceKokoro = sl<VoiceRepository>().getVoiceKokoro();
       final voiceGoogle = sl<VoiceRepository>().getVoiceGoogle();
-      await ttsService1.initialize(voiceType: voiceKokoro);
       await ttsService2.initialize(voiceType: voiceGoogle);
+      await ttsService1.initialize(voiceType: voiceKokoro);
       emit(TtsModelLoaded());
     } catch (e) {
       emit(TtsModelError(message: e.toString()));

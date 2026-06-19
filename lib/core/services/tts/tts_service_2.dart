@@ -1,4 +1,4 @@
-import 'package:ai_voice_chat/core/services/tts_service.dart';
+import 'package:ai_voice_chat/core/services/tts/tts_service.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 class TTSService2 implements TtsService {
@@ -52,7 +52,7 @@ class TTSService2 implements TtsService {
 
   @override
   Future<void> changeVoice(String voiceType) async {
-    await flutterTts.setVoice({'name': '', 'locale': 'en_US'});
+    await flutterTts.setVoice({'name': voiceType, 'locale': 'en-US'});
   }
 
   @override

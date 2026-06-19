@@ -1,6 +1,8 @@
 // lib/main.dart
-import 'package:ai_voice_chat/core/services/stt_service.dart';
+import 'package:ai_voice_chat/core/services/stt/stt_service.dart';
 import 'package:ai_voice_chat/core/widgets/on_tap_unfocus.dart';
+import 'package:ai_voice_chat/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ai_voice_chat/core/services/service_locator.dart';
 import 'package:ai_voice_chat/features/home/presentation/view/home_screen.dart';
@@ -8,6 +10,7 @@ import 'package:ai_voice_chat/core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await init();
   await sl<STTService>().initialize();
   runApp(const MyApp());

@@ -18,10 +18,15 @@ class STTService {
   }
 
   Future<bool> initialize() async {
-    return await _stt.initialize(
-      onStatus: (status) => _statusListener?.call(status),
-      onError: (error) => _errorListener?.call(error),
-    );
+    if (_stt.isAvailable) return true;
+    try {
+      return await _stt.initialize(
+        onStatus: (status) => _statusListener?.call(status),
+        onError: (error) => _errorListener?.call(error),
+      );
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<void> listen(Function(String) onSpeechResult) async {
@@ -30,9 +35,9 @@ class STTService {
         onSpeechResult(result.recognizedWords);
       },
       listenOptions: SpeechListenOptions(
-        listenMode: ListenMode.dictation,
+        listenMode: ListenMode.confirmation,
         partialResults: true,
-        pauseFor: const Duration(seconds: 4),
+        pauseFor: const Duration(seconds: 10),
       ),
     );
   }

@@ -1,11 +1,12 @@
 // lib/services/tts_service.dart
 
 import 'dart:convert';
+import 'package:ai_voice_chat/core/services/system/is_64_bit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_onnxruntime/flutter_onnxruntime.dart';
 import 'package:http/http.dart' as http;
-import '../constants/kokoro_vocab.dart';
+import '../../constants/kokoro_vocab.dart';
 import 'audio_sevice.dart';
 import 'tts_service.dart';
 
@@ -23,6 +24,13 @@ class TtsService1 implements TtsService {
   @override
   Future<void> initialize({String? voiceType}) async {
     if (_isInitialized) return;
+
+    // Check 64-bit support first
+    final has64bit = await is64bit();
+    if (!has64bit) {
+      _isInitialized = true;
+      return; // skip ONNX loading entirely
+    }
 
     final ort = OnnxRuntime();
 
