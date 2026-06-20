@@ -1,0 +1,5 @@
+quickly read AGENT.md file for some rules. Now, Let's duplicate text_to_speech into speech_to_text too. Copy the chat_screen directly into speak_screen. But instead of Text field we are going to implement something from image.png
+  As you can see, There are message widgets exist, but instead of the text field there is different widget. This widget has three buttons (one at start: settings button, two at the end: mute, and stop buttons).
+  We will transfer voice and fast&quality changing widgets to the settings button. When this button is pressed, a dialog should open, and at the top of it, we have segmented button which selects fast or quality.
+  And based on the choice, voice selecting will appear on the same dialog. Also, when user speaks to micraphone, the text of his speach should appear at the top of that three button, as an italic text(as on the
+  image.png). One last item of this widget is that it has an animated colored gradient indicator that is blue or green when user is speaking, and purple when the AI is talking.

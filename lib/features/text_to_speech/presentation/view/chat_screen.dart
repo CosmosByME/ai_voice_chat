@@ -1,7 +1,6 @@
 import 'package:ai_voice_chat/core/services/ai_service/ai_service.dart';
 import 'package:ai_voice_chat/core/services/service_locator.dart';
-import 'package:ai_voice_chat/features/text_to_speech/presentation/bloc/tts_model/tts_model_bloc.dart';
-import 'package:ai_voice_chat/features/text_to_speech/presentation/bloc/voice/voice_bloc.dart';
+import 'package:ai_voice_chat/features/speech_to_text/presentation/bloc/tts_model/tts_model_bloc.dart';
 import 'package:ai_voice_chat/features/text_to_speech/presentation/view/widgets/chat_app_bar.dart';
 import 'package:ai_voice_chat/features/text_to_speech/presentation/view/widgets/chat_input_bar.dart';
 import 'package:ai_voice_chat/features/text_to_speech/presentation/view/widgets/chat_message_bubble.dart';
@@ -11,33 +10,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 export 'widgets/chat_message_bubble.dart' show ChatMessage;
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<VoiceBloc>()..add(GetVoiceGoogleEvent()),
-      child: BlocProvider(
-        create: (_) => sl<TtsModelBloc>()..add(TtsModelInitialize()),
-        child: const ChatScreenView(),
-      ),
-    );
-  }
+  State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class ChatScreenView extends StatefulWidget {
-  const ChatScreenView({super.key});
-
-  @override
-  State<ChatScreenView> createState() => _ChatScreenViewState();
-}
-
-class _ChatScreenViewState extends State<ChatScreenView> {
+class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final List<ChatMessage> _messages = [];
-  bool _isFastMode = true;
 
   @override
   void initState() {
@@ -99,11 +82,6 @@ class _ChatScreenViewState extends State<ChatScreenView> {
           ChatMessage(text: response, isUser: false, timestamp: DateTime.now()),
         );
       });
-      if (mounted) {
-        context.read<TtsModelBloc>().add(
-          TtsModelSay(text: response, isFast: _isFastMode),
-        );
-      }
       _scrollToBottom();
     }
   }
@@ -113,15 +91,6 @@ class _ChatScreenViewState extends State<ChatScreenView> {
     return Scaffold(
       backgroundColor: const Color(0xFF0D0A1C),
       appBar: ChatAppBar(
-        isFastMode: _isFastMode,
-        onModeChanged: (val) {
-          setState(() => _isFastMode = val);
-          if (val) {
-            context.read<VoiceBloc>().add(GetVoiceGoogleEvent());
-          } else {
-            context.read<VoiceBloc>().add(GetVoiceKokoroEvent());
-          }
-        },
       ),
       body: Column(
         children: [

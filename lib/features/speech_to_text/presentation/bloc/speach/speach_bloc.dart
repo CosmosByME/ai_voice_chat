@@ -9,6 +9,11 @@ part 'speach_event.dart';
 part 'speach_state.dart';
 
 class SpeachBloc extends Bloc<SpeachEvent, SpeachState> {
+  /// Guards against duplicate submissions. Set to true once a SpeechStop
+  /// with non-empty text is emitted. Reset only when a new StartListening
+  /// begins a fresh recording session.
+  bool _hasSubmitted = false;
+
   SpeachBloc() : super(SpeachInitial()) {
     sl<STTService>().setListeners(
       onStatus: (status) {
@@ -20,6 +25,7 @@ class SpeachBloc extends Bloc<SpeachEvent, SpeachState> {
     );
 
     on<StartListening>((event, emit) async {
+      _hasSubmitted = false;
       emit(SpeachListening(text: ''));
       try {
         await sl<AudioService>().stop();
@@ -37,10 +43,18 @@ class SpeachBloc extends Bloc<SpeachEvent, SpeachState> {
     });
 
     on<SpeechResultUpdated>((event, emit) {
-      emit(SpeachListening(text: event.text));
+      // Only accept results while still in a listening session.
+      if (!_hasSubmitted) {
+        emit(SpeachListening(text: event.text));
+      }
     });
 
     on<SpeechStatusChanged>((event, emit) {
+      // If we've already submitted for this session, ignore all further
+      // status changes (the plugin can fire 'notListening' and 'done'
+      // multiple times).
+      if (_hasSubmitted) return;
+
       final currentText = state is SpeachListening
           ? (state as SpeachListening).text
           : (state is SpeechStop ? (state as SpeechStop).text : '');
@@ -48,6 +62,7 @@ class SpeachBloc extends Bloc<SpeachEvent, SpeachState> {
       if (event.status == 'listening') {
         emit(SpeachListening(text: currentText));
       } else if (event.status == 'notListening' || event.status == 'done') {
+        _hasSubmitted = currentText.isNotEmpty;
         emit(SpeechStop(text: currentText));
       }
     });
@@ -57,11 +72,14 @@ class SpeachBloc extends Bloc<SpeachEvent, SpeachState> {
     });
 
     on<StopListening>((event, emit) async {
+      if (_hasSubmitted) return;
+      _hasSubmitted = event.text.isNotEmpty;
       await sl<STTService>().stop();
       emit(SpeechStop(text: event.text));
     });
 
     on<Dispose>((event, emit) async {
+      _hasSubmitted = false;
       await sl<STTService>().cancel();
       emit(SpeechStop(text: ''));
     });
@@ -69,3 +87,4 @@ class SpeachBloc extends Bloc<SpeachEvent, SpeachState> {
 
 
 }
+

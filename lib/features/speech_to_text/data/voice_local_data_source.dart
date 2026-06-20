@@ -6,6 +6,9 @@ abstract class VoiceLocalDataSource {
 
   Future<void> casheVoiceGoogle(String text);
   String? getVoiceGoogle();
+
+  Future<void> saveIsFastMode(bool isFast);
+  bool getIsFastMode();
 }
 
 class VoiceLocalDataSourceImpl implements VoiceLocalDataSource {
@@ -30,5 +33,16 @@ class VoiceLocalDataSourceImpl implements VoiceLocalDataSource {
   @override
   String? getVoiceGoogle() {
     return localStorage.getString('voiceGoogle');
+  }
+
+  @override
+  Future<void> saveIsFastMode(bool isFast) {
+    return localStorage.saveString('isFastMode', isFast.toString());
+  }
+
+  @override
+  bool getIsFastMode() {
+    final val = localStorage.getString('isFastMode');
+    return val == null || val == 'true';
   }
 }

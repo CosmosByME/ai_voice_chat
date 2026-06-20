@@ -1,4 +1,4 @@
-import 'package:ai_voice_chat/features/speech_to_text/presentation/bloc/bloc/speach_bloc.dart';
+import 'package:ai_voice_chat/features/speech_to_text/presentation/bloc/speach/speach_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
