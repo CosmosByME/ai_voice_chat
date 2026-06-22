@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_ai/firebase_ai.dart';
 
 class AIService {
@@ -26,20 +28,31 @@ class AIService {
     ],
   );
 
-  Future<String> sendMessage(String message) async {
-    try {
-      final chat = model.startChat(
-        history: [
-          Content.text("Hello, my name is Muhammad"),
-          Content.model([const TextPart("Nice to meet you Muhammad")]),
-        ],
-      );
+  Stream<String> sendMessage(String message) {
+    final controller = StreamController<String>.broadcast();
 
-      final response = await chat.sendMessage(Content.text(message));
+    () async {
+      try {
+        final chat = model.startChat(
+          history: [
+            Content.text("Hello, my name is Muhammad"),
+            Content.model([const TextPart("Nice to meet you Muhammad")]),
+          ],
+        );
+        final response = chat.sendMessageStream(Content.text(message));
 
-      return response.text ?? "";
-    } catch (e) {
-      return 'Error: $e';
-    }
+        final buffer = StringBuffer();
+        await for (final chunk in response) {
+          buffer.write(chunk.text ?? '');
+          controller.add(buffer.toString());
+        }
+      } catch (e) {
+        controller.add('Error: $e');
+      } finally {
+        await controller.close();
+      }
+    }();
+
+    return controller.stream;
   }
 }

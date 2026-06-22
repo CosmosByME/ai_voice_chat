@@ -79,30 +79,16 @@ class _SpeakScreenViewState extends State<SpeakScreenView> {
       _messages.add(
         ChatMessage(text: text, isUser: true, timestamp: DateTime.now()),
       );
+    });
+    _scrollToBottom();
+    final response = sl<AIService>().sendMessage(text);
+
+    setState(() {
       _messages.add(
-        ChatMessage(
-          text: 'Thinking...',
-          isUser: false,
-          timestamp: DateTime.now(),
-        ),
+        ChatMessage(stream: response, isUser: false, timestamp: DateTime.now()),
       );
     });
     _scrollToBottom();
-
-    final response = await sl<AIService>().sendMessage(text);
-
-    if (response.isNotEmpty && mounted) {
-      setState(() {
-        _messages.removeLast();
-        _messages.add(
-          ChatMessage(text: response, isUser: false, timestamp: DateTime.now()),
-        );
-      });
-      context.read<TtsModelBloc>().add(
-        TtsModelSay(text: response),
-      );
-      _scrollToBottom();
-    }
   }
 
   @override
@@ -120,6 +106,10 @@ class _SpeakScreenViewState extends State<SpeakScreenView> {
         appBar: AppBar(
           backgroundColor: const Color(0xFF0D0A1C),
           elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.clear, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
           centerTitle: true,
           title: Text(
             'AI Voice Chat',
@@ -143,6 +133,7 @@ class _SpeakScreenViewState extends State<SpeakScreenView> {
               onStop: () {
                 context.read<TtsModelBloc>().add(TtsModelStop());
                 context.read<SpeachBloc>().add(Dispose());
+                Navigator.pop(context);
               },
             ),
           ],

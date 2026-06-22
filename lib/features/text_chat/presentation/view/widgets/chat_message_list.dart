@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 class ChatMessageList extends StatelessWidget {
   final List<ChatMessage> messages;
   final ScrollController scrollController;
+  /// Fired by each AI bubble whenever a new stream chunk is rendered.
+  final VoidCallback? onStreamChunk;
 
   const ChatMessageList({
     super.key,
     required this.messages,
     required this.scrollController,
+    this.onStreamChunk,
   });
 
   @override
@@ -22,6 +25,7 @@ class ChatMessageList extends StatelessWidget {
         return ChatMessageBubble(
           message: messages[index],
           showVoiceLabel: index > 0,
+          onStreamChunk: onStreamChunk,
         );
       },
     );

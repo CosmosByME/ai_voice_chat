@@ -1,11 +1,11 @@
 // lib/main.dart
 import 'package:ai_voice_chat/core/services/stt/stt_service.dart';
 import 'package:ai_voice_chat/core/widgets/on_tap_unfocus.dart';
+import 'package:ai_voice_chat/features/text_chat/presentation/view/chat_screen.dart';
 import 'package:ai_voice_chat/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ai_voice_chat/core/services/service_locator.dart';
-import 'package:ai_voice_chat/features/home/presentation/view/home_screen.dart';
 import 'package:ai_voice_chat/core/theme/app_theme.dart';
 
 void main() async {
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
       theme: AppTheme.darkTheme,
-      home: OnTapUnfocus(child: HomeScreen()),
+      home: OnTapUnfocus(child: ChatScreen()),
     );
   }
 }

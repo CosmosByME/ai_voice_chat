@@ -4,6 +4,7 @@ import 'package:ai_voice_chat/features/text_chat/presentation/view/widgets/chat_
 import 'package:ai_voice_chat/features/text_chat/presentation/view/widgets/chat_input_bar.dart';
 import 'package:ai_voice_chat/features/text_chat/presentation/view/widgets/chat_message_bubble.dart';
 import 'package:ai_voice_chat/features/text_chat/presentation/view/widgets/chat_message_list.dart';
+import 'package:ai_voice_chat/features/voice_chat/presentation/view/speak_screen.dart';
 import 'package:flutter/material.dart';
 
 export 'widgets/chat_message_bubble.dart' show ChatMessage;
@@ -62,43 +63,40 @@ class _ChatScreenState extends State<ChatScreen> {
     });
     _controller.clear();
     _scrollToBottom();
+    final response = sl<AIService>().sendMessage(text);
+
     setState(() {
       _messages.add(
-        ChatMessage(
-          text: 'Thinking...',
-          isUser: false,
-          timestamp: DateTime.now(),
-        ),
+        ChatMessage(stream: response, isUser: false, timestamp: DateTime.now()),
       );
     });
-    final response = await sl<AIService>().sendMessage(text);
-    if (response.isNotEmpty) {
-      setState(() {
-        _messages.removeLast();
-        _messages.add(
-          ChatMessage(text: response, isUser: false, timestamp: DateTime.now()),
-        );
-      });
-      _scrollToBottom();
-    }
+    _scrollToBottom();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0D0A1C),
-      appBar: ChatAppBar(
-      ),
+      appBar: ChatAppBar(),
       body: Column(
         children: [
           Expanded(
             child: ChatMessageList(
               messages: _messages,
               scrollController: _scrollController,
+              onStreamChunk: _scrollToBottom,
             ),
           ),
           // const ChatErrorBar(),
-          ChatInputBar(controller: _controller, onSend: _sendMessage),
+          ChatInputBar(
+            controller: _controller,
+            onSend: _sendMessage,
+            onPressed: () {
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (context) => SpeakScreen()));
+            },
+          ),
         ],
       ),
     );

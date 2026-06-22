@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 class ChatInputBar extends StatelessWidget {
   final TextEditingController controller;
+  final VoidCallback onPressed;
   final VoidCallback onSend;
 
   const ChatInputBar({
     super.key,
     required this.controller,
+    required this.onPressed,
     required this.onSend,
   });
 
@@ -41,6 +43,7 @@ class ChatInputBar extends StatelessWidget {
                 onSubmitted: (_) => onSend(),
               ),
             ),
+            _VoiceInputButton(onPressed: onPressed),
             _SendButton(onSend: onSend),
           ],
         ),
@@ -67,6 +70,30 @@ class _SendButton extends StatelessWidget {
             size: 20,
           ),
           onPressed: onSend,
+        ),
+      ),
+    );
+  }
+}
+
+class _VoiceInputButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  const _VoiceInputButton({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: CircleAvatar(
+        backgroundColor: const Color(0xFFF58A07),
+        radius: 20,
+        child: IconButton(
+          icon: const Icon(
+            Icons.voice_chat,
+            color: Color(0xFF0D0A1C),
+            size: 20,
+          ),
+          onPressed: onPressed,
         ),
       ),
     );
