@@ -1,12 +1,11 @@
 import 'package:ai_voice_chat/core/services/ai_service/ai_service.dart';
 import 'package:ai_voice_chat/core/services/tts/audio_sevice.dart';
 import 'package:ai_voice_chat/core/services/stt/stt_service.dart';
-import 'package:ai_voice_chat/core/services/tts/tts_service1.dart';
 import 'package:ai_voice_chat/core/services/tts/tts_service_2.dart';
-import 'package:ai_voice_chat/features/speech_to_text/data/voice_local_data_source.dart';
-import 'package:ai_voice_chat/features/speech_to_text/domain/voice_repository.dart';
-import 'package:ai_voice_chat/features/speech_to_text/presentation/bloc/tts_model/tts_model_bloc.dart';
-import 'package:ai_voice_chat/features/speech_to_text/presentation/bloc/voice/voice_bloc.dart';
+import 'package:ai_voice_chat/features/voice_chat/data/voice_local_data_source.dart';
+import 'package:ai_voice_chat/features/voice_chat/domain/voice_repository.dart';
+import 'package:ai_voice_chat/features/voice_chat/presentation/bloc/tts_model/tts_model_bloc.dart';
+import 'package:ai_voice_chat/features/voice_chat/presentation/bloc/voice/voice_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ai_voice_chat/core/services/system/local_storage.dart';
@@ -19,7 +18,6 @@ Future<void> init() async {
     () => LocalStorage(sharedPreferences: sharedPreferences),
   );
 
-  sl.registerLazySingleton<TtsService1>(() => TtsService1(audioService: sl()));
   sl.registerLazySingleton<TTSService2>(() => TTSService2());
 
   sl.registerLazySingleton<AudioService>(() => AudioService());
@@ -42,7 +40,6 @@ Future<void> init() async {
 
   sl.registerLazySingleton<TtsModelBloc>(
     () => TtsModelBloc(
-      ttsService1: sl(),
       ttsService2: sl(),
       audioService: sl(),
     ),

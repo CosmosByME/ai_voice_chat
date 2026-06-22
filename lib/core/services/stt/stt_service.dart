@@ -35,7 +35,7 @@ class STTService {
         onSpeechResult(result.recognizedWords);
       },
       listenOptions: SpeechListenOptions(
-        listenMode: ListenMode.confirmation,
+        listenMode: ListenMode.dictation,
         partialResults: true,
         pauseFor: const Duration(seconds: 10),
       ),

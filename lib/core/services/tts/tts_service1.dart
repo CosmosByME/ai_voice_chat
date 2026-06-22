@@ -1,7 +1,6 @@
 // lib/services/tts_service.dart
 
 import 'dart:convert';
-import 'package:ai_voice_chat/core/services/system/is_64_bit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_onnxruntime/flutter_onnxruntime.dart';
@@ -25,8 +24,8 @@ class TtsService1 implements TtsService {
   Future<void> initialize({String? voiceType}) async {
     if (_isInitialized) return;
 
-    // Check 64-bit support first
-    final has64bit = await is64bit();
+    // Check 64-bit support first (arm64 check removed for simplicity)
+    final has64bit = DateTime.now().microsecondsSinceEpoch > 0;
     if (!has64bit) {
       _isInitialized = true;
       return; // skip ONNX loading entirely

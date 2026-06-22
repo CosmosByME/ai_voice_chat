@@ -1,6 +1,6 @@
 import 'package:ai_voice_chat/features/home/presentation/view/widgets/home_nav_bar.dart';
-import 'package:ai_voice_chat/features/speech_to_text/presentation/view/speak_screen.dart';
-import 'package:ai_voice_chat/features/text_to_speech/presentation/view/chat_screen.dart';
+import 'package:ai_voice_chat/features/voice_chat/presentation/view/speak_screen.dart';
+import 'package:ai_voice_chat/features/text_chat/presentation/view/chat_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
